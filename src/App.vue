@@ -1,9 +1,11 @@
 <template>
   <div id="app">
     <div>
-      <button @click="getData">
-        get Data
-      </button>
+      <ul>
+        <li v-for="country in allAffectedCountries" :key="country">
+          {{ country }}
+        </li>
+      </ul>
     </div>
     <router-view />
   </div>
@@ -11,14 +13,20 @@
 
 <script>
 import CoronaVirusApi from './api/CoronaVirusApi'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'App',
+  created() {
+    this.initialData()
+  },
+  computed: {
+    ...mapGetters(['allAffectedCountries']),
+  },
   methods: {
-    async getData() {
-      const data = await CoronaVirusApi.getAllInfectedCountries()
-      console.log(CoronaVirusApi.headers, 'private')
-
-      console.log(data)
+    ...mapActions(['setAllAffectedCountries']),
+    async initialData() {
+      const affectedCountries = await CoronaVirusApi.getAllInfectedCountries()
+      this.setAllAffectedCountries(affectedCountries)
     },
   },
 }
