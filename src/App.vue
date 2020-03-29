@@ -1,32 +1,33 @@
 <template>
   <div id="app">
-    <div>
-      <ul>
-        <li v-for="country in allAffectedCountries" :key="country">
-          {{ country }}
-        </li>
-      </ul>
-    </div>
+    <HomeDashboard />
     <router-view />
   </div>
 </template>
 
 <script>
 import CoronaVirusApi from './api/CoronaVirusApi'
+import HomeDashboard from './views/HomeDashboard'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'App',
+  components: {
+    HomeDashboard,
+  },
   created() {
-    this.initialData()
+    // this.initialData()
   },
   computed: {
     ...mapGetters(['allAffectedCountries']),
   },
   methods: {
-    ...mapActions(['setAllAffectedCountries']),
+    ...mapActions(['setAllAffectedCountries', 'setWorldStats']),
     async initialData() {
-      const affectedCountries = await CoronaVirusApi.getAllInfectedCountries()
+      const affectedCountries = await CoronaVirusApi.getCasesByCountry()
+      const worldStats = await CoronaVirusApi.getWorldTotalStats()
+
       this.setAllAffectedCountries(affectedCountries)
+      this.setWorldStats(worldStats)
     },
   },
 }
