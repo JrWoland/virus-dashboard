@@ -14,6 +14,9 @@ const getters = {
   getWorldStats(state) {
     return state.worldStats
   },
+  getAllStatsForCountries(state) {
+    return state.allAffectedCountries
+  },
 }
 
 const actions = {
