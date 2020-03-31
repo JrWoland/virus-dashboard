@@ -15,7 +15,7 @@ export default {
     HomeDashboard,
   },
   created() {
-    // this.initialData()
+    this.initialData()
   },
   computed: {
     ...mapGetters(['allAffectedCountries']),
@@ -23,10 +23,7 @@ export default {
   methods: {
     ...mapActions(['setAllAffectedCountries', 'setWorldStats']),
     async initialData() {
-      const affectedCountries = await CoronaVirusApi.getCasesByCountry()
       const worldStats = await CoronaVirusApi.getWorldTotalStats()
-
-      this.setAllAffectedCountries(affectedCountries)
       this.setWorldStats(worldStats)
     },
   },

@@ -1,49 +1,57 @@
 <template>
-  <div class="info">
-    <div class="info-card">
-      <p class="info-card__title">New cases</p>
-      <p class="info-card__value">{{ getWorldStats.new_cases }} 123</p>
+  <el-container direction="vertical">
+    <el-row>
+      <AppSlider />
+    </el-row>
+
+    <div class="stats">
+      <AppInfoBox :title="'New cases'" :value="getWorldStats.new_cases" />
+      <AppInfoBox :title="'Total cases'" :value="getWorldStats.total_cases" />
+      <AppInfoBox :title="'Deaths'" :value="getWorldStats.new_deaths" />
+      <AppInfoBox :title="'Recovered'" :value="getWorldStats.total_recovered" />
     </div>
-    <div class="info-card">
-      <p class="info-card__title">Total cases</p>
-      <p class="info-card__value">{{ getWorldStats.total_cases }} 1245</p>
+
+    <div class="stats-type">
+      <el-radio-group v-model="radio">
+        <el-radio :label="1">Active cases</el-radio>
+        <el-radio :label="2">Total</el-radio>
+        <el-radio :label="3">Deaths</el-radio>
+        <el-radio :label="4">Recovered</el-radio>
+      </el-radio-group>
     </div>
-    <div class="info-card">
-      <p class="info-card__title">Deaths</p>
-      <p class="info-card__value">{{ getWorldStats.total_deaths }} 123</p>
+    <div class="stats-type">
+      here chart shall be
     </div>
-  </div>
+  </el-container>
 </template>
 
 <script>
+import AppSlider from '../components/AppSlider'
+import AppInfoBox from '../components/AppInfoBox'
 import { mapGetters } from 'vuex'
 export default {
   name: 'HomeDashboard',
+  components: {
+    AppSlider,
+    AppInfoBox,
+  },
+  data() {
+    return {
+      radio: 0,
+    }
+  },
   computed: {
     ...mapGetters(['getWorldStats']),
   },
 }
 </script>
 
-<style lang="scss" scoped>
-.info {
+<style lang="scss">
+.stats,
+.stats-type {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-}
-.info-card {
-  width: 200px;
-  box-shadow: 4px 4px 7px 2px rgba(0, 0, 0, 0.081);
-  border-radius: 10px;
-  text-align: center;
-  &__title {
-    font-size: 24px;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-  &__value {
-    font-size: 24px;
-    text-transform: uppercase;
-  }
+  margin: 20px 0;
 }
 </style>
