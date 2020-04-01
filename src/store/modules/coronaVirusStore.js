@@ -1,21 +1,19 @@
 const state = {
   allAffectedCountries: {
-    countries_stat: [],
+    Countries: [],
+    Date: '',
   },
   worldStats: {},
 }
 
 const getters = {
   allAffectedCountries(state) {
-    return state.allAffectedCountries.countries_stat.map(
-      item => item.country_name
+    return state.allAffectedCountries.Countries.filter(
+      country => country.Country !== ''
     )
   },
   getWorldStats(state) {
     return state.worldStats
-  },
-  getAllStatsForCountries(state) {
-    return state.allAffectedCountries
   },
 }
 
