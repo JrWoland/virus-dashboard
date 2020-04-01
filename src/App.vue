@@ -1,14 +1,14 @@
 <template>
-  <div id="app">
+  <el-container id="app">
     <HomeDashboard />
     <router-view />
-  </div>
+  </el-container>
 </template>
 
 <script>
 import CoronaVirusApi from './api/CoronaVirusApi'
 import HomeDashboard from './views/HomeDashboard'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 export default {
   name: 'App',
   components: {
@@ -17,17 +17,13 @@ export default {
   created() {
     this.initialData()
   },
-  computed: {
-    ...mapGetters(['allAffectedCountries']),
-  },
   methods: {
-    ...mapActions(['setAllAffectedCountries', 'setWorldStats']),
+    ...mapActions(['setWorldStats']),
     async initialData() {
-      const worldStats = await CoronaVirusApi.getWorldTotalStats()
-      this.setWorldStats(worldStats)
+      this.setWorldStats(await CoronaVirusApi.getWorldTotalStats())
     },
   },
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped></style>

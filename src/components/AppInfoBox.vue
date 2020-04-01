@@ -1,7 +1,7 @@
 <template>
   <div class="info-card">
     <p class="info-card__title">{{ title }}</p>
-    <p class="info-card__value">{{ value || 2134214 }}</p>
+    <p class="info-card__value">{{ value || 0 }}</p>
   </div>
 </template>
 
