@@ -5,9 +5,8 @@
     </el-row>
 
     <div class="stats">
-      <AppInfoBox :title="'New cases'" :value="getWorldStats.new_cases" />
       <AppInfoBox :title="'Total cases'" :value="getWorldStats.total_cases" />
-      <AppInfoBox :title="'Deaths'" :value="getWorldStats.new_deaths" />
+      <AppInfoBox :title="'Deaths'" :value="getWorldStats.total_deaths" />
       <AppInfoBox :title="'Recovered'" :value="getWorldStats.total_recovered" />
     </div>
 
@@ -22,18 +21,24 @@
     <div class="stats-type">
       here chart shall be
     </div>
+
+    <div>
+      <AppCountryList />
+    </div>
   </el-container>
 </template>
 
 <script>
 import AppSlider from '../components/AppSlider'
 import AppInfoBox from '../components/AppInfoBox'
+import AppCountryList from '../components/AppCountryList'
 import { mapGetters } from 'vuex'
 export default {
   name: 'HomeDashboard',
   components: {
     AppSlider,
     AppInfoBox,
+    AppCountryList,
   },
   data() {
     return {
@@ -46,7 +51,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .stats,
 .stats-type {
   display: flex;
