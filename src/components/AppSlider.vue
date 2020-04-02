@@ -1,6 +1,6 @@
 <template>
-  <div class="block">
-    <el-slider v-model="date"></el-slider>
+  <div class="app-slider">
+    <el-slider max="1000" v-model="date"></el-slider>
     <span class="demonstration">Default value</span>
   </div>
 </template>
@@ -16,4 +16,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.app-slider {
+  padding: 0 20px;
+}
+</style>

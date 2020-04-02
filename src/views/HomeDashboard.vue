@@ -21,24 +21,18 @@
     <div class="stats-type">
       here chart shall be
     </div>
-
-    <div>
-      <AppCountryList />
-    </div>
   </el-container>
 </template>
 
 <script>
 import AppSlider from '../components/AppSlider'
 import AppInfoBox from '../components/AppInfoBox'
-import AppCountryList from '../components/AppCountryList'
 import { mapGetters } from 'vuex'
 export default {
   name: 'HomeDashboard',
   components: {
     AppSlider,
     AppInfoBox,
-    AppCountryList,
   },
   data() {
     return {

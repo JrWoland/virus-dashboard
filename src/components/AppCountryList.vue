@@ -1,6 +1,7 @@
 <template>
-  <el-container direction="vertical" class="country-list">
+  <el-container v-loading="isLoading" direction="vertical" class="country-list">
     <el-checkbox
+      class="check-all"
       :indeterminate="isIndeterminate"
       v-model="checkAll"
       @change="handleCheckAllChange"
@@ -30,6 +31,7 @@ export default {
       checkAll: false,
       checkedCountries: [],
       isIndeterminate: true,
+      isLoading: false,
     }
   },
   computed: {
@@ -38,9 +40,11 @@ export default {
   methods: {
     ...mapActions(['setAllAffectedCountries']),
     async getAffectedCountryList() {
+      this.isLoading = true
       this.setAllAffectedCountries(
         await CoronaVirusApi.getLatestCasesForContries()
       )
+      this.isLoading = false
     },
     handleCheckAllChange(val) {
       this.checkedCountries = val
@@ -63,11 +67,17 @@ export default {
 
 <style lang="scss" scoped>
 .el-container {
-  max-height: 100vh;
-}
-.el-checkbox-group {
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
+  padding: 5px;
+  height: 100vh;
+  max-width: 300px;
+  .check-all {
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+  }
+  .el-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
 }
 </style>
