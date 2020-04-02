@@ -1,6 +1,6 @@
 <template>
   <div class="app-slider">
-    <el-slider max="1000" v-model="date"></el-slider>
+    <el-slider :max="1000" v-model="date"></el-slider>
     <span class="demonstration">Default value</span>
   </div>
 </template>

@@ -4,10 +4,23 @@
       <AppSlider />
     </el-row>
 
+    <span>Last update: {{ getWorldStats.statistic_taken_at }}</span>
     <div class="stats">
-      <AppInfoBox :title="'Total cases'" :value="getWorldStats.total_cases" />
-      <AppInfoBox :title="'Deaths'" :value="getWorldStats.total_deaths" />
-      <AppInfoBox :title="'Recovered'" :value="getWorldStats.total_recovered" />
+      <AppInfoBox
+        style="color: blueviolet;"
+        :title="'Total cases'"
+        :value="getWorldStats.total_cases"
+      />
+      <AppInfoBox
+        style="color: crimson;"
+        :title="'Deaths'"
+        :value="getWorldStats.total_deaths"
+      />
+      <AppInfoBox
+        style="color: green;"
+        :title="'Recovered'"
+        :value="getWorldStats.total_recovered"
+      />
     </div>
 
     <div class="stats-type">

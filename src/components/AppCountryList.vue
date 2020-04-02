@@ -67,7 +67,7 @@ export default {
 
 <style lang="scss" scoped>
 .el-container {
-  padding: 5px;
+  padding: 0px 5px 0px;
   height: 100vh;
   max-width: 300px;
   .check-all {
