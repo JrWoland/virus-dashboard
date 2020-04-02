@@ -1,7 +1,7 @@
 import Vue from 'vue'
-
+import './assets/scss/reset.scss'
 import ElementUI from 'element-ui'
-import './scss/element-ui/theme/index.css'
+import './assets/scss/element-ui/theme/index.css'
 import locale from 'element-ui/lib/locale/lang/en'
 
 import App from './App.vue'
