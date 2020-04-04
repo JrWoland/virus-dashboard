@@ -31,8 +31,9 @@
         <el-radio :label="4">Recovered</el-radio>
       </el-radio-group>
     </div>
-    <div class="stats-type">
+    <div>
       here chart shall be
+      <AppLineChart />
     </div>
   </el-container>
 </template>
@@ -40,12 +41,14 @@
 <script>
 import AppSlider from '../components/AppSlider'
 import AppInfoBox from '../components/AppInfoBox'
+import AppLineChart from '../components/AppLineChart'
 import { mapGetters } from 'vuex'
 export default {
   name: 'HomeDashboard',
   components: {
     AppSlider,
     AppInfoBox,
+    AppLineChart,
   },
   data() {
     return {
