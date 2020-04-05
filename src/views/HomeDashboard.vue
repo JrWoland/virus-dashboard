@@ -1,7 +1,7 @@
 <template>
   <el-container direction="vertical">
     <el-row>
-      <AppSlider />
+      <AppSlider @slide-event="getValue" />
     </el-row>
 
     <span>Last update: {{ getWorldStats.statistic_taken_at }}</span>
@@ -32,13 +32,20 @@
       </el-radio-group>
     </div>
     <div>
-      here chart shall be
-      <AppLineChart />
+      <AppLineChart
+        :currentDate="sliderValue"
+        :dataToDisplay="dataToDisplay"
+        :xAxisRange="range"
+        :seriesDoDisplay="series"
+        :legend="legend"
+      />
     </div>
   </el-container>
 </template>
 
 <script>
+import poland from '../mock/poland'
+import china from '../mock/china'
 import AppSlider from '../components/AppSlider'
 import AppInfoBox from '../components/AppInfoBox'
 import AppLineChart from '../components/AppLineChart'
@@ -53,10 +60,63 @@ export default {
   data() {
     return {
       radio: 0,
+      sliderValue: null,
+      range: china.map(i => i.Date),
+      dataToDisplay: [],
+      series: [],
+      legend: [],
     }
+  },
+  created() {
+    this.setSeriesToDisplay()
+    this.setLegendToDisplay()
   },
   computed: {
     ...mapGetters(['getWorldStats']),
+  },
+  watch: {
+    sliderValue: function() {
+      this.setDataToDisplay()
+    },
+  },
+  methods: {
+    getValue(e) {
+      this.sliderValue = e.value
+    },
+    mapData(array = []) {
+      const index = array.map(i => i.Date).indexOf(this.range[this.sliderValue])
+      if (index < 0) {
+        return []
+      }
+      return array.slice(0, index).map(item => [item.Date, item.Cases])
+    },
+    setLegendToDisplay() {
+      this.legend = ['China', 'Poland']
+    },
+    setSeriesToDisplay() {
+      this.series = [
+        {
+          name: 'China',
+          type: 'line',
+          datasetIndex: 0,
+        },
+        {
+          name: 'Poland',
+          type: 'line',
+          datasetIndex: 1,
+        },
+      ]
+    },
+    setDataToDisplay() {
+      this.dataToDisplay = [
+        {
+          source: this.mapData(china),
+        },
+        {
+          source: this.mapData(poland),
+        },
+      ]
+    },
   },
 }
 </script>

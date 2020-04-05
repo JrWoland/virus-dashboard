@@ -1,6 +1,10 @@
 <template>
   <div class="app-slider">
-    <el-slider :max="1000" v-model="date"></el-slider>
+    <el-slider
+      :max="max"
+      v-model="valueSlide"
+      :format-tooltip="formatTooltip"
+    ></el-slider>
     <span class="demonstration">Default value</span>
   </div>
 </template>
@@ -10,14 +14,42 @@ export default {
   name: 'AppSlider',
   data() {
     return {
-      date: 0,
+      valueSlide: this.value,
     }
+  },
+  props: {
+    max: {
+      type: Number,
+      default: 100,
+    },
+    value: {
+      type: Number,
+      default: 0,
+    },
+    dataset: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  methods: {
+    formatTooltip(val) {
+      return this.dataset[val]
+    },
+  },
+  watch: {
+    valueSlide: function() {
+      this.$emit('slide-event', {
+        day: this.dataset[this.valueSlide],
+        value: this.valueSlide,
+      })
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
 .app-slider {
+  width: 50%;
   padding: 0 20px;
 }
 </style>

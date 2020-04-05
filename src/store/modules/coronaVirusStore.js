@@ -3,6 +3,7 @@ const state = {
     Countries: [],
     Date: '',
   },
+
   worldStats: {},
 }
 
