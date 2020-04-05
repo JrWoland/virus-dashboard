@@ -3,18 +3,23 @@ const state = {
     Countries: [],
     Date: '',
   },
-
+  countriesDataset: [],
   worldStats: {},
 }
 
 const getters = {
   allAffectedCountries(state) {
-    return state.allAffectedCountries.Countries.filter(
-      country => country.Country !== ''
-    )
+    return state.allAffectedCountries.Countries.filter(country => {
+      if (country.Country !== '') {
+        return country
+      }
+    })
   },
   getWorldStats(state) {
     return state.worldStats
+  },
+  getCountriesDataset() {
+    return state.countriesDataset
   },
 }
 
@@ -25,6 +30,9 @@ const actions = {
   setWorldStats({ commit }, stats) {
     commit('SET_WORLD_STATS', stats)
   },
+  setCountriesDataset({ commit }, result) {
+    commit('SET_COUNTRIES_DATASET', result)
+  },
 }
 
 const mutations = {
@@ -33,6 +41,9 @@ const mutations = {
   },
   SET_WORLD_STATS(state, worldStats) {
     state.worldStats = worldStats
+  },
+  SET_COUNTRIES_DATASET(state, result) {
+    state.countriesDataset = result
   },
 }
 

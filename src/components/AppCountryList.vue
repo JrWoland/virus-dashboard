@@ -5,15 +5,19 @@
       :indeterminate="isIndeterminate"
       v-model="checkAll"
       @change="handleCheckAllChange"
-      >Check all</el-checkbox
     >
+      Check all
+      <el-button size="mini" @click="getDataForCheckedCountries"
+        >Download data</el-button
+      >
+    </el-checkbox>
     <el-checkbox-group
       v-model="checkedCountries"
       @change="handleCheckedCountriesChange"
     >
       <el-checkbox
         v-for="country in allAffectedCountries"
-        :label="country.Country"
+        :label="country.Slug"
         :key="country.Country"
         >{{ country.Country }}</el-checkbox
       >
@@ -38,7 +42,19 @@ export default {
     ...mapGetters(['allAffectedCountries']),
   },
   methods: {
-    ...mapActions(['setAllAffectedCountries']),
+    ...mapActions(['setAllAffectedCountries', 'setCountriesDataset']),
+    async getDataForCheckedCountries() {
+      this.isLoading = true
+      const arrayOfPromises = []
+      this.checkedCountries.forEach(country => {
+        arrayOfPromises.push(
+          CoronaVirusApi.getHistoryFromDayOneForCountry(country, 'confirmed')
+        )
+      })
+      const result = await Promise.all(arrayOfPromises)
+      this.setCountriesDataset(result)
+      this.isLoading = false
+    },
     async getAffectedCountryList() {
       this.isLoading = true
       this.setAllAffectedCountries(
@@ -48,7 +64,7 @@ export default {
     },
     handleCheckAllChange(val) {
       this.checkedCountries = val
-        ? this.allAffectedCountries.map(item => item.Country)
+        ? this.allAffectedCountries.map(item => item.Slug)
         : []
       this.isIndeterminate = false
     },
@@ -60,7 +76,7 @@ export default {
     },
   },
   mounted() {
-    // this.getAffectedCountryList()
+    this.getAffectedCountryList()
   },
 }
 </script>

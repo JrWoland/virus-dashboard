@@ -33,7 +33,6 @@
     </div>
     <div>
       <AppLineChart
-        :currentDate="sliderValue"
         :dataToDisplay="dataToDisplay"
         :xAxisRange="range"
         :seriesDoDisplay="series"
@@ -44,7 +43,6 @@
 </template>
 
 <script>
-import poland from '../mock/poland'
 import china from '../mock/china'
 import AppSlider from '../components/AppSlider'
 import AppInfoBox from '../components/AppInfoBox'
@@ -72,10 +70,15 @@ export default {
     this.setLegendToDisplay()
   },
   computed: {
-    ...mapGetters(['getWorldStats']),
+    ...mapGetters(['getWorldStats', 'getCountriesDataset']),
   },
   watch: {
     sliderValue: function() {
+      this.setDataToDisplay()
+    },
+    getCountriesDataset: function() {
+      this.setSeriesToDisplay()
+      this.setLegendToDisplay()
       this.setDataToDisplay()
     },
   },
@@ -88,34 +91,32 @@ export default {
       if (index < 0) {
         return []
       }
-      return array.slice(0, index).map(item => [item.Date, item.Cases])
+      return array
+        .slice(0, index)
+        .map(item => [item.Date, item.Cases === 0 ? undefined : item.Cases])
     },
     setLegendToDisplay() {
-      this.legend = ['China', 'Poland']
+      this.legend = this.getCountriesDataset
+        .filter(dataset => dataset.length > 0)
+        .map(dataset => dataset[0].Country)
     },
     setSeriesToDisplay() {
-      this.series = [
-        {
-          name: 'China',
-          type: 'line',
-          datasetIndex: 0,
-        },
-        {
-          name: 'Poland',
-          type: 'line',
-          datasetIndex: 1,
-        },
-      ]
+      this.series = this.getCountriesDataset
+        .filter(dataset => dataset.length > 0)
+        .map((dataset, index) => {
+          return {
+            name: dataset[0].Country,
+            type: 'line',
+            datasetIndex: index,
+          }
+        })
     },
     setDataToDisplay() {
-      this.dataToDisplay = [
-        {
-          source: this.mapData(china),
-        },
-        {
-          source: this.mapData(poland),
-        },
-      ]
+      this.dataToDisplay = this.getCountriesDataset.map(dataset => {
+        return {
+          source: this.mapData(dataset),
+        }
+      })
     },
   },
 }

@@ -18,13 +18,9 @@ export default {
       type: Array,
       default: () => [],
     },
-    currentDate: {
-      type: Number,
-      default: 50,
-    },
     yAxisMax: {
       type: Number,
-      default: 100000,
+      default: null,
     },
     xAxisRange: {
       type: Array,
@@ -75,6 +71,10 @@ export default {
     dataToDisplay: function() {
       this.chart.setOption({
         dataset: this.dataToDisplay,
+        legend: {
+          data: this.legend,
+        },
+        series: this.seriesDoDisplay,
       })
     },
   },

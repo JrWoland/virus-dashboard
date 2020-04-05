@@ -67,7 +67,7 @@ class CoronaVirusApi {
 
   getHistoryFromDayOneForCountry(countrySlug, statusSlug) {
     return this.myRequest(
-      this.#myAxios2.get(`/dayone/country/${countrySlug}/status/${statusSlug}`)
+      this.#myAxios2.get(`/total/country/${countrySlug}/status/${statusSlug}`)
     )
   }
 

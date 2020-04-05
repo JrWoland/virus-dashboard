@@ -4,6 +4,8 @@
       :max="max"
       v-model="valueSlide"
       :format-tooltip="formatTooltip"
+      show-input
+      debounce="300"
     ></el-slider>
     <span class="demonstration">Default value</span>
   </div>
@@ -20,7 +22,7 @@ export default {
   props: {
     max: {
       type: Number,
-      default: 100,
+      default: 74,
     },
     value: {
       type: Number,
