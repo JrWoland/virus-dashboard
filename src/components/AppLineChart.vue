@@ -6,6 +6,8 @@
 
 <script>
 import echarts from 'echarts'
+// import china from '../mock/china'
+// import poland from '../mock/poland'
 export default {
   name: 'AppLineChart',
   data() {
@@ -15,6 +17,10 @@ export default {
   },
   props: {
     dataToDisplay: {
+      type: Array,
+      default: () => [],
+    },
+    dimentions: {
       type: Array,
       default: () => [],
     },
@@ -43,22 +49,23 @@ export default {
         title: {
           text: 'Dataset',
         },
-        legend: {
-          data: this.legend,
-        },
+        // legend: {
+        //   data: ['China'],
+        // },
         tooltip: {
           trigger: 'axis',
         },
-        dataset: this.dataToDisplay,
+        dataset: {
+          dimensions: this.dimentions,
+          source: this.dataToDisplay,
+        },
         xAxis: {
           data: this.xAxisRange,
           type: 'category',
-          // min: '2020-01-22T00:00:00Z',
-          // max: '2020-04-03T00:00:00Z',
         },
         yAxis: {
-          max: this.yAxisMax,
           min: 0,
+          max: 100000,
         },
         series: this.seriesDoDisplay,
       })
@@ -70,9 +77,9 @@ export default {
   watch: {
     dataToDisplay: function() {
       this.chart.setOption({
-        dataset: this.dataToDisplay,
-        legend: {
-          data: this.legend,
+        dataset: {
+          dimensions: this.dimentions,
+          source: this.dataToDisplay,
         },
         series: this.seriesDoDisplay,
       })
@@ -84,7 +91,7 @@ export default {
 <style lang="scss" scoped>
 .app-line-chart {
   width: 100%;
-  height: 400px;
+  height: 500px;
   padding: 10px;
 }
 </style>
