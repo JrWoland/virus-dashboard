@@ -1,5 +1,5 @@
 <template>
-  <el-container direction="vertical">
+  <el-container class="dashboard-view" direction="vertical">
     <span>Last update: {{ getWorldStats.statistic_taken_at }}</span>
     <div class="stats">
       <AppInfoBox
@@ -19,19 +19,18 @@
       />
     </div>
 
-    <div class="stats-type">
-      <el-radio-group v-model="radio">
-        <el-radio :label="1">Active cases</el-radio>
-        <el-radio :label="2">Total</el-radio>
-        <el-radio :label="3">Deaths</el-radio>
-        <el-radio :label="4">Recovered</el-radio>
-      </el-radio-group>
-    </div>
-    <!-- <button @click="test">test</button> -->
-    <el-row>
-      <AppSlider @slide-event="getSliderValue" />
-    </el-row>
-    <div>
+    <div class="dynamic-chart">
+      <div class="stats-type">
+        <el-radio-group v-model="radio">
+          <el-radio :label="1">Active cases</el-radio>
+          <el-radio :label="2">Confirmed</el-radio>
+          <el-radio :label="3">Deaths</el-radio>
+          <el-radio :label="4">Recovered</el-radio>
+        </el-radio-group>
+      </div>
+      <div>
+        <AppSlider @slide-event="getSliderValue" />
+      </div>
       <AppLineChart
         :dataToDisplay="dataToDisplay"
         :xAxisRange="range"
@@ -47,10 +46,8 @@
 import AppSlider from '../components/AppSlider'
 import AppInfoBox from '../components/AppInfoBox'
 import AppLineChart from '../components/AppLineChart'
-import china from '../mock/china'
-
-// import poland  from '../mock/poland'
 import { mapGetters } from 'vuex'
+import CoronaVirusApi from '../api/CoronaVirusApi'
 export default {
   name: 'HomeDashboard',
   components: {
@@ -63,7 +60,7 @@ export default {
       radio: 0,
       baseData: [],
       sliderValue: null,
-      range: china.map(i => i.Date),
+      range: [],
       dataToDisplay: [],
       dimentions: [],
       series: [],
@@ -71,9 +68,7 @@ export default {
     }
   },
   created() {
-    // this.setDataToDisplay()
-    // this.setSeriesToDisplay()
-    // this.setLegendToDisplay()
+    this.initialData()
   },
   computed: {
     ...mapGetters(['getWorldStats', 'getCountriesDataset']),
@@ -90,23 +85,17 @@ export default {
     },
   },
   methods: {
+    async initialData() {
+      const data = await CoronaVirusApi.getHistoryOfAllStatuses('china')
+      this.sliderValue = data.length
+      this.range = data.map(i => i.Date)
+    },
     getSliderValue(e) {
       this.sliderValue = e.value
     },
     setNewValues() {
-      console.log('zrobił')
-
       const slicedData = this.baseData.slice(0, this.sliderValue)
       this.setDataToDisplay(slicedData)
-    },
-    mapData(array = []) {
-      const index = array.map(i => i.Date).indexOf(this.range[this.sliderValue])
-      if (index < 0) {
-        return []
-      }
-      return array
-        .slice(0, index)
-        .map(item => [item.Date, item.Cases === 0 ? undefined : item.Cases])
     },
     setLegendToDisplay() {
       this.legend = this.getCountriesDataset
@@ -121,7 +110,6 @@ export default {
             type: 'line',
             smooth: true,
             symbol: 'none',
-            sampling: 'average',
           }
         })
     },
@@ -132,7 +120,6 @@ export default {
       this.dataToDisplay = data
     },
     test() {
-      // const dataset = [poland, china]
       const base = this.getCountriesDataset[0].map(i => ({ Date: i.Date }))
 
       this.getCountriesDataset.forEach(country => {
@@ -140,7 +127,7 @@ export default {
         country.forEach(
           (item, index) =>
             (base[index][propertyCountryName] =
-              item.Cases === 0 ? undefined : item.Cases)
+              item.Confirmed === 0 ? undefined : item.Confirmed)
         )
       })
       this.baseData = base
@@ -151,11 +138,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.stats,
+@import 'src/assets/scss/variables.scss';
+.dashboard-view {
+  margin: 10px 20px;
+}
+.stats {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
 .stats-type {
   display: flex;
   justify-content: space-around;
-  flex-wrap: wrap;
-  margin: 20px 0;
+}
+.dynamic-chart {
+  padding: 10px;
+  box-shadow: $box-shadow;
 }
 </style>

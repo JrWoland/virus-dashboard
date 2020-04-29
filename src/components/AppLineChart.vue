@@ -6,8 +6,6 @@
 
 <script>
 import echarts from 'echarts'
-// import china from '../mock/china'
-// import poland from '../mock/poland'
 export default {
   name: 'AppLineChart',
   data() {
@@ -49,9 +47,9 @@ export default {
         title: {
           text: 'Dataset',
         },
-        // legend: {
-        //   data: ['China'],
-        // },
+        legend: {
+          data: this.legend,
+        },
         tooltip: {
           trigger: 'axis',
         },
@@ -65,7 +63,7 @@ export default {
         },
         yAxis: {
           min: 0,
-          max: 100000,
+          // max: 100000,
         },
         series: this.seriesDoDisplay,
       })
@@ -82,6 +80,13 @@ export default {
           source: this.dataToDisplay,
         },
         series: this.seriesDoDisplay,
+      })
+    },
+    xAxisRange: function() {
+      this.chart.setOption({
+        xAxis: {
+          data: this.xAxisRange,
+        },
       })
     },
   },

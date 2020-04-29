@@ -1,5 +1,5 @@
 <template>
-  <el-container v-loading="isLoading" direction="vertical" class="country-list">
+  <el-aside v-loading="isLoading" direction="vertical" class="country-list">
     <el-checkbox
       class="check-all"
       :indeterminate="isIndeterminate"
@@ -16,16 +16,18 @@
       @change="handleCheckedCountriesChange"
     >
       <el-checkbox
-        v-for="country in allAffectedCountries"
+        v-for="country in countryList"
         :label="country.Slug"
         :key="country.Country"
-        >{{ country.Country }}</el-checkbox
-      >
+        >{{ country.Country }}
+        <el-tag size="mini">{{ country.TotalConfirmed }}</el-tag>
+      </el-checkbox>
     </el-checkbox-group>
-  </el-container>
+  </el-aside>
 </template>
 
 <script>
+import { sortObjectsBy } from '../scripts/SortingScript.js'
 import { mapGetters, mapActions } from 'vuex'
 import CoronaVirusApi from '../api/CoronaVirusApi'
 export default {
@@ -40,6 +42,11 @@ export default {
   },
   computed: {
     ...mapGetters(['allAffectedCountries']),
+    countryList: function() {
+      return [...this.allAffectedCountries].sort(
+        sortObjectsBy('TotalConfirmed', 'desc')
+      )
+    },
   },
   methods: {
     ...mapActions(['setAllAffectedCountries', 'setCountriesDataset']),
@@ -47,9 +54,7 @@ export default {
       this.isLoading = true
       const arrayOfPromises = []
       this.checkedCountries.forEach(country => {
-        arrayOfPromises.push(
-          CoronaVirusApi.getHistoryFromDayOneForCountry(country, 'confirmed')
-        )
+        arrayOfPromises.push(CoronaVirusApi.getHistoryOfAllStatuses(country))
       })
       const result = await Promise.all(arrayOfPromises)
       this.setCountriesDataset(result)
@@ -75,14 +80,14 @@ export default {
         checkedCount > 0 && checkedCount < this.allAffectedCountries.length
     },
   },
-  mounted() {
+  created() {
     this.getAffectedCountryList()
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.el-container {
+.el-aside {
   padding: 0px 5px 0px;
   height: 100vh;
   max-width: 300px;

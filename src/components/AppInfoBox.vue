@@ -20,7 +20,6 @@ export default {
   width: 200px;
   height: 100px;
   box-shadow: 4px 4px 7px 2px rgba(0, 0, 0, 0.081);
-  border-radius: 10px;
   text-align: center;
   &__title {
     margin: 10px;

@@ -6,8 +6,6 @@
       :format-tooltip="formatTooltip"
       show-input
     ></el-slider>
-    <input @input="debounceInput" type="range" />
-    <span class="demonstration">Default value</span>
   </div>
 </template>
 
@@ -23,7 +21,7 @@ export default {
   props: {
     max: {
       type: Number,
-      default: 76,
+      default: 90,
     },
     value: {
       type: Number,
@@ -38,12 +36,7 @@ export default {
     formatTooltip(val) {
       return this.dataset[val]
     },
-    debounceInput(e) {
-      console.log(e)
-      // _.debounce(function(e) {
-      // }, 2000)
-    },
-    do() {
+    emitValue() {
       this.$emit('slide-event', {
         day: this.dataset[this.valueSlide],
         value: this.valueSlide,
@@ -51,17 +44,16 @@ export default {
     },
   },
   watch: {
-    valueSlide: debounce(function(newVal) {
-      console.log(newVal)
-      this.do()
-    }, 100),
+    valueSlide: debounce(function() {
+      this.emitValue()
+    }, 5),
   },
 }
 </script>
 
 <style lang="scss" scoped>
 .app-slider {
-  width: 50%;
+  width: 100%;
   padding: 0 20px;
 }
 </style>
