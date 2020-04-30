@@ -1,26 +1,35 @@
 <template>
-  <el-aside v-loading="isLoading" direction="vertical" class="country-list">
-    <el-checkbox
-      class="check-all"
-      :indeterminate="isIndeterminate"
-      v-model="checkAll"
-      @change="handleCheckAllChange"
-    >
-      Check all
-      <el-button size="mini" @click="getDataForCheckedCountries"
-        >Download data</el-button
+  <el-aside v-loading="isLoading" class="country-list">
+    <div class="country-list__options">
+      <el-button
+        class="country-list__download-button"
+        size="mini"
+        type="primary"
+        @click="getDataForCheckedCountries"
+        >Download data
+      </el-button>
+      <el-checkbox
+        class="country-list__check-all"
+        :indeterminate="isIndeterminate"
+        v-model="checkAll"
+        @change="handleCheckAllChange"
       >
-    </el-checkbox>
+        Check all
+      </el-checkbox>
+    </div>
     <el-checkbox-group
+      class="country-list__checkbox-group"
       v-model="checkedCountries"
       @change="handleCheckedCountriesChange"
     >
       <el-checkbox
+        class="country-list__checkbox-item"
         v-for="country in countryList"
         :label="country.Slug"
         :key="country.Country"
-        >{{ country.Country }}
+      >
         <el-tag size="mini">{{ country.TotalConfirmed }}</el-tag>
+        {{ country.Country }}
       </el-checkbox>
     </el-checkbox-group>
   </el-aside>
@@ -87,18 +96,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.el-aside {
-  padding: 0px 5px 0px;
-  height: 100vh;
+.country-list {
+  // position: fixed;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
   max-width: 300px;
-  .check-all {
+  height: 100vh;
+  &__options {
+    height: 50px;
+  }
+  &__check-all {
     border-bottom: 1px solid #ddd;
     font-weight: bold;
   }
-  .el-checkbox-group {
+  &__checkbox-group {
     display: flex;
     flex-direction: column;
+    height: calc(100vh - 50px);
     overflow: auto;
+  }
+  &__checkbox-item {
+    margin: 2px 0;
+  }
+  &__download-button {
+    width: 100%;
   }
 }
 </style>
