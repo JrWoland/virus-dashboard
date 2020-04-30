@@ -18,6 +18,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    dimentions: {
+      type: Array,
+      default: () => [],
+    },
     yAxisMax: {
       type: Number,
       default: null,
@@ -49,16 +53,17 @@ export default {
         tooltip: {
           trigger: 'axis',
         },
-        dataset: this.dataToDisplay,
+        dataset: {
+          dimensions: this.dimentions,
+          source: this.dataToDisplay,
+        },
         xAxis: {
           data: this.xAxisRange,
           type: 'category',
-          // min: '2020-01-22T00:00:00Z',
-          // max: '2020-04-03T00:00:00Z',
         },
         yAxis: {
-          max: this.yAxisMax,
           min: 0,
+          // max: 100000,
         },
         series: this.seriesDoDisplay,
       })
@@ -70,11 +75,18 @@ export default {
   watch: {
     dataToDisplay: function() {
       this.chart.setOption({
-        dataset: this.dataToDisplay,
-        legend: {
-          data: this.legend,
+        dataset: {
+          dimensions: this.dimentions,
+          source: this.dataToDisplay,
         },
         series: this.seriesDoDisplay,
+      })
+    },
+    xAxisRange: function() {
+      this.chart.setOption({
+        xAxis: {
+          data: this.xAxisRange,
+        },
       })
     },
   },
@@ -84,7 +96,7 @@ export default {
 <style lang="scss" scoped>
 .app-line-chart {
   width: 100%;
-  height: 400px;
+  height: 500px;
   padding: 10px;
 }
 </style>

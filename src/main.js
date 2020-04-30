@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import './assets/scss/reset.scss'
+import './assets/scss/style.scss'
 import ElementUI from 'element-ui'
 import './assets/scss/element-ui/theme/index.css'
 import locale from 'element-ui/lib/locale/lang/en'

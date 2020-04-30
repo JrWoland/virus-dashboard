@@ -10,7 +10,7 @@ const state = {
 const getters = {
   allAffectedCountries(state) {
     return state.allAffectedCountries.Countries.filter(country => {
-      if (country.Country !== '') {
+      if (country.Country !== '' && country.TotalConfirmed !== 0) {
         return country
       }
     })

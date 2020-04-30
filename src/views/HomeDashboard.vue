@@ -1,9 +1,5 @@
 <template>
-  <el-container direction="vertical">
-    <el-row>
-      <AppSlider @slide-event="getValue" />
-    </el-row>
-
+  <el-container class="dashboard-view" direction="vertical">
     <span>Last update: {{ getWorldStats.statistic_taken_at }}</span>
     <div class="stats">
       <AppInfoBox
@@ -23,31 +19,35 @@
       />
     </div>
 
-    <div class="stats-type">
-      <el-radio-group v-model="radio">
-        <el-radio :label="1">Active cases</el-radio>
-        <el-radio :label="2">Total</el-radio>
-        <el-radio :label="3">Deaths</el-radio>
-        <el-radio :label="4">Recovered</el-radio>
-      </el-radio-group>
-    </div>
-    <div>
+    <div class="dynamic-chart">
+      <div class="stats-type">
+        <el-radio-group v-model="radio">
+          <el-radio :label="1">Active cases</el-radio>
+          <el-radio :label="2">Confirmed</el-radio>
+          <el-radio :label="3">Deaths</el-radio>
+          <el-radio :label="4">Recovered</el-radio>
+        </el-radio-group>
+      </div>
+      <div>
+        <AppSlider @slide-event="getSliderValue" />
+      </div>
       <AppLineChart
         :dataToDisplay="dataToDisplay"
         :xAxisRange="range"
         :seriesDoDisplay="series"
         :legend="legend"
+        :dimentions="dimentions"
       />
     </div>
   </el-container>
 </template>
 
 <script>
-import china from '../mock/china'
 import AppSlider from '../components/AppSlider'
 import AppInfoBox from '../components/AppInfoBox'
 import AppLineChart from '../components/AppLineChart'
 import { mapGetters } from 'vuex'
+import CoronaVirusApi from '../api/CoronaVirusApi'
 export default {
   name: 'HomeDashboard',
   components: {
@@ -58,42 +58,44 @@ export default {
   data() {
     return {
       radio: 0,
+      baseData: [],
       sliderValue: null,
-      range: china.map(i => i.Date),
+      range: [],
       dataToDisplay: [],
+      dimentions: [],
       series: [],
       legend: [],
     }
   },
   created() {
-    this.setSeriesToDisplay()
-    this.setLegendToDisplay()
+    this.initialData()
   },
   computed: {
     ...mapGetters(['getWorldStats', 'getCountriesDataset']),
   },
   watch: {
     sliderValue: function() {
-      this.setDataToDisplay()
+      this.setNewValues()
     },
     getCountriesDataset: function() {
+      this.test()
       this.setSeriesToDisplay()
-      this.setLegendToDisplay()
-      this.setDataToDisplay()
+      this.setDataToDisplay(this.baseData)
+      this.setDimentions(this.baseData)
     },
   },
   methods: {
-    getValue(e) {
+    async initialData() {
+      const data = await CoronaVirusApi.getHistoryOfAllStatuses('china')
+      this.sliderValue = data.length
+      this.range = data.map(i => i.Date)
+    },
+    getSliderValue(e) {
       this.sliderValue = e.value
     },
-    mapData(array = []) {
-      const index = array.map(i => i.Date).indexOf(this.range[this.sliderValue])
-      if (index < 0) {
-        return []
-      }
-      return array
-        .slice(0, index)
-        .map(item => [item.Date, item.Cases === 0 ? undefined : item.Cases])
+    setNewValues() {
+      const slicedData = this.baseData.slice(0, this.sliderValue)
+      this.setDataToDisplay(slicedData)
     },
     setLegendToDisplay() {
       this.legend = this.getCountriesDataset
@@ -103,31 +105,55 @@ export default {
     setSeriesToDisplay() {
       this.series = this.getCountriesDataset
         .filter(dataset => dataset.length > 0)
-        .map((dataset, index) => {
+        .map(() => {
           return {
-            name: dataset[0].Country,
             type: 'line',
-            datasetIndex: index,
+            smooth: true,
+            symbol: 'none',
           }
         })
     },
-    setDataToDisplay() {
-      this.dataToDisplay = this.getCountriesDataset.map(dataset => {
-        return {
-          source: this.mapData(dataset),
-        }
+    setDimentions(data) {
+      this.dimentions = Object.keys(data[0])
+    },
+    setDataToDisplay(data) {
+      this.dataToDisplay = data
+    },
+    test() {
+      const base = this.getCountriesDataset[0].map(i => ({ Date: i.Date }))
+
+      this.getCountriesDataset.forEach(country => {
+        const propertyCountryName = country[0].Country
+        country.forEach(
+          (item, index) =>
+            (base[index][propertyCountryName] =
+              item.Confirmed === 0 ? undefined : item.Confirmed)
+        )
       })
+      this.baseData = base
+      return base
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.stats,
+@import 'src/assets/scss/variables.scss';
+.dashboard-view {
+  margin: 10px 20px;
+}
+.stats {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
 .stats-type {
   display: flex;
   justify-content: space-around;
-  flex-wrap: wrap;
-  margin: 20px 0;
+}
+.dynamic-chart {
+  padding: 10px;
+  box-shadow: $box-shadow;
 }
 </style>

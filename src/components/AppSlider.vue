@@ -5,13 +5,12 @@
       v-model="valueSlide"
       :format-tooltip="formatTooltip"
       show-input
-      debounce="300"
     ></el-slider>
-    <span class="demonstration">Default value</span>
   </div>
 </template>
 
 <script>
+import debounce from 'lodash/debounce'
 export default {
   name: 'AppSlider',
   data() {
@@ -22,7 +21,7 @@ export default {
   props: {
     max: {
       type: Number,
-      default: 74,
+      default: 90,
     },
     value: {
       type: Number,
@@ -37,21 +36,24 @@ export default {
     formatTooltip(val) {
       return this.dataset[val]
     },
-  },
-  watch: {
-    valueSlide: function() {
+    emitValue() {
       this.$emit('slide-event', {
         day: this.dataset[this.valueSlide],
         value: this.valueSlide,
       })
     },
   },
+  watch: {
+    valueSlide: debounce(function() {
+      this.emitValue()
+    }, 5),
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 .app-slider {
-  width: 50%;
+  width: 100%;
   padding: 0 20px;
 }
 </style>

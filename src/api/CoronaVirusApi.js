@@ -65,6 +65,10 @@ class CoronaVirusApi {
     return this.myRequest(this.#myAxios2.get('/summary'))
   }
 
+  getHistoryOfAllStatuses(countrySlug) {
+    return this.myRequest(this.#myAxios2.get(`/total/country/${countrySlug}`))
+  }
+
   getHistoryFromDayOneForCountry(countrySlug, statusSlug) {
     return this.myRequest(
       this.#myAxios2.get(`/total/country/${countrySlug}/status/${statusSlug}`)
