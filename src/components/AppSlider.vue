@@ -4,7 +4,6 @@
       :max="max"
       v-model="valueSlide"
       :format-tooltip="formatTooltip"
-      show-input
     ></el-slider>
   </div>
 </template>
@@ -34,7 +33,7 @@ export default {
   },
   methods: {
     formatTooltip(val) {
-      return this.dataset[val]
+      return `Day ${val}`
     },
     emitValue() {
       this.$emit('slide-event', {

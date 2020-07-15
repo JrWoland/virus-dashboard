@@ -63,7 +63,6 @@ export default {
         },
         yAxis: {
           min: 0,
-          // max: 100000,
         },
         series: this.seriesDoDisplay,
       })
@@ -74,10 +73,28 @@ export default {
   },
   watch: {
     dataToDisplay: function() {
+      this.chart.clear()
       this.chart.setOption({
+        animation: false,
+        title: {
+          text: 'Dataset',
+        },
+        legend: {
+          data: this.legend,
+        },
+        tooltip: {
+          trigger: 'axis',
+        },
         dataset: {
           dimensions: this.dimentions,
           source: this.dataToDisplay,
+        },
+        xAxis: {
+          data: this.xAxisRange,
+          type: 'category',
+        },
+        yAxis: {
+          min: 0,
         },
         series: this.seriesDoDisplay,
       })

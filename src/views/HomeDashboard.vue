@@ -1,6 +1,5 @@
 <template>
   <el-container class="dashboard-view" direction="vertical">
-    <span>Last update: {{ getWorldStats.statistic_taken_at }}</span>
     <div class="stats">
       <AppInfoBox
         style="color: blueviolet;"
@@ -17,19 +16,24 @@
         :title="'Recovered'"
         :value="getWorldStats.total_recovered"
       />
+      <AppInfoBox
+        style="color: cornflowerblue;"
+        :title="'Active Cases'"
+        :value="getWorldStats.active_cases"
+      />
     </div>
 
     <div class="dynamic-chart">
       <div class="stats-type">
-        <el-radio-group v-model="radio">
-          <el-radio :label="1">Active cases</el-radio>
-          <el-radio :label="2">Confirmed</el-radio>
-          <el-radio :label="3">Deaths</el-radio>
-          <el-radio :label="4">Recovered</el-radio>
+        <el-radio-group @change="changeDataToDisplay" v-model="radio">
+          <el-radio :label="'Active'">Active cases</el-radio>
+          <el-radio :label="'Confirmed'">Confirmed</el-radio>
+          <el-radio :label="'Deaths'">Deaths</el-radio>
+          <el-radio :label="'Recovered'">Recovered</el-radio>
         </el-radio-group>
       </div>
       <div>
-        <AppSlider @slide-event="getSliderValue" />
+        <AppSlider :max="maxSlideValue" @slide-event="getSliderValue" />
       </div>
       <AppLineChart
         :dataToDisplay="dataToDisplay"
@@ -39,6 +43,7 @@
         :dimentions="dimentions"
       />
     </div>
+    <span>Last update: {{ getWorldStats.statistic_taken_at }}</span>
   </el-container>
 </template>
 
@@ -57,9 +62,10 @@ export default {
   },
   data() {
     return {
-      radio: 0,
+      radio: 'Confirmed',
       baseData: [],
       sliderValue: null,
+      maxSlideValue: null,
       range: [],
       dataToDisplay: [],
       dimentions: [],
@@ -78,16 +84,19 @@ export default {
       this.setNewValues()
     },
     getCountriesDataset: function() {
-      this.test()
+      this.changeDataToDisplay(this.radio)
+    },
+  },
+  methods: {
+    changeDataToDisplay(e) {
+      this.mapAllDatasets(e)
       this.setSeriesToDisplay()
       this.setDataToDisplay(this.baseData)
       this.setDimentions(this.baseData)
     },
-  },
-  methods: {
     async initialData() {
-      const data = await CoronaVirusApi.getHistoryOfAllStatuses('china')
-      this.sliderValue = data.length
+      const data = await CoronaVirusApi.getHistoryOfAllStatuses('poland')
+      this.maxSlideValue = data.length
       this.range = data.map(i => i.Date)
     },
     getSliderValue(e) {
@@ -119,15 +128,14 @@ export default {
     setDataToDisplay(data) {
       this.dataToDisplay = data
     },
-    test() {
+    mapAllDatasets(type = this.radio) {
       const base = this.getCountriesDataset[0].map(i => ({ Date: i.Date }))
-
       this.getCountriesDataset.forEach(country => {
         const propertyCountryName = country[0].Country
         country.forEach(
           (item, index) =>
             (base[index][propertyCountryName] =
-              item.Confirmed === 0 ? undefined : item.Confirmed)
+              item[type] === 0 ? undefined : item[type])
         )
       })
       this.baseData = base
@@ -143,10 +151,12 @@ export default {
   margin: 10px 20px;
 }
 .stats {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin: 20px 0;
+  display: grid;
+  column-gap: 10px;
+  row-gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  margin: 10px 0;
+  color: cornflowerblue;
 }
 .stats-type {
   display: flex;
