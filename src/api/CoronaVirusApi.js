@@ -5,6 +5,7 @@
 import axios from 'axios'
 
 class CoronaVirusApi {
+ // feel free to use this key if you want
   #rapidKey = 'a3495eb567msheffe8e1e8777959p1480fejsna8c7a7c97dbc'
   #headers = {
     'content-type': 'application/octet-stream',
