@@ -40,14 +40,15 @@ export default {
     },
   },
   methods: {
-    initChart() {
+    renderChart() {
       this.chart = echarts.init(document.querySelector('.app-line-chart'))
       this.chart.setOption({
         animation: false,
         title: {
-          text: 'Dataset',
+          text: 'Countries',
         },
         legend: {
+          show: true,
           data: this.legend,
         },
         tooltip: {
@@ -69,42 +70,11 @@ export default {
     },
   },
   mounted() {
-    this.initChart()
+    this.renderChart()
   },
   watch: {
     dataToDisplay: function() {
-      this.chart.clear()
-      this.chart.setOption({
-        animation: false,
-        title: {
-          text: 'Dataset',
-        },
-        legend: {
-          data: this.legend,
-        },
-        tooltip: {
-          trigger: 'axis',
-        },
-        dataset: {
-          dimensions: this.dimentions,
-          source: this.dataToDisplay,
-        },
-        xAxis: {
-          data: this.xAxisRange,
-          type: 'category',
-        },
-        yAxis: {
-          min: 0,
-        },
-        series: this.seriesDoDisplay,
-      })
-    },
-    xAxisRange: function() {
-      this.chart.setOption({
-        xAxis: {
-          data: this.xAxisRange,
-        },
-      })
+      this.renderChart()
     },
   },
 }

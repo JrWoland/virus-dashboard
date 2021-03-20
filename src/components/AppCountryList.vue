@@ -1,5 +1,6 @@
 <template>
   <el-aside v-loading="isLoading" class="country-list">
+    <el-input size="mini" placeholder="search country" v-model="input" />
     <div class="country-list__options">
       <el-button
         class="country-list__download-button"
@@ -8,14 +9,6 @@
         @click="getDataForCheckedCountries"
         >Download data
       </el-button>
-      <el-checkbox
-        class="country-list__check-all"
-        :indeterminate="isIndeterminate"
-        v-model="checkAll"
-        @change="handleCheckAllChange"
-      >
-        Check all
-      </el-checkbox>
     </div>
     <el-checkbox-group
       class="country-list__checkbox-group"
@@ -47,6 +40,7 @@ export default {
       checkedCountries: [],
       isIndeterminate: true,
       isLoading: false,
+      input: '',
     }
   },
   computed: {
@@ -54,6 +48,11 @@ export default {
     countryList: function() {
       return [...this.allAffectedCountries].sort(
         sortObjectsBy('TotalConfirmed', 'desc')
+      )
+    },
+    filteredCountryList: function() {
+      return this.countryList.filter(
+        country => country.Country.toLowerCase() === this.input.toLowerCase()
       )
     },
   },
@@ -76,18 +75,14 @@ export default {
       )
       this.isLoading = false
     },
-    handleCheckAllChange(val) {
-      this.checkedCountries = val
-        ? this.allAffectedCountries.map(item => item.Slug)
-        : []
-      this.isIndeterminate = false
-    },
     handleCheckedCountriesChange(value) {
       let checkedCount = value.length
       this.checkAll = checkedCount === this.allAffectedCountries.length
       this.isIndeterminate =
         checkedCount > 0 && checkedCount < this.allAffectedCountries.length
     },
+
+    handleSearch() {},
   },
   created() {
     this.getAffectedCountryList()

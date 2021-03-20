@@ -91,8 +91,9 @@ export default {
     changeDataToDisplay(e) {
       this.mapAllDatasets(e)
       this.setSeriesToDisplay()
-      this.setDataToDisplay(this.baseData)
-      this.setDimentions(this.baseData)
+      this.setLegendToDisplay()
+      this.setDataToDisplay([...this.baseData])
+      this.setDimentions([...this.baseData])
     },
     async initialData() {
       const data = await CoronaVirusApi.getHistoryOfAllStatuses('poland')
@@ -109,12 +110,13 @@ export default {
     setLegendToDisplay() {
       this.legend = this.getCountriesDataset
         .filter(dataset => dataset.length > 0)
-        .map(dataset => dataset[0].Country)
+        .map(dataset => ({ name: dataset[0].Country }))
     },
     setSeriesToDisplay() {
       this.series = this.getCountriesDataset
         .filter(dataset => dataset.length > 0)
-        .map(() => {
+        .map(item => {
+          console.log(item)
           return {
             type: 'line',
             smooth: true,
